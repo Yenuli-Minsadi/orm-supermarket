@@ -37,7 +37,9 @@ public class FactoryConfiguration {
     }
 
     public Session getSession() {
-        return sessionFactory.openSession();
+        return sessionFactory.openSession();// gets sessions
+        //Session session = sessionFactory.openSession();
+        //return session;
     }
 
 }
