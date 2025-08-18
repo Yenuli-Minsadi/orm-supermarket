@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Date;
+import java.util.List;
 
 /**
  * --------------------------------------------
@@ -19,14 +20,25 @@ import java.sql.Date;
  **/
 
 @Entity
-@Table(name = "order")
+@Table(name = "orders")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class Order {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "order_id")
     private String id;
-    private String customerId;
+
+    @Column(name = "order_date")
     private Date orderDate;
+
+    @ManyToOne
+    @JoinColumn(name = "cust_id")//@Column danna ba join column dnna oni relationship ekkdi
+    private Customer customer;
+//    private String customerId;
+    @OneToMany(
+            mappedBy = "order",
+            cascade = CascadeType.ALL
+    )
+    List<OrderDetail> orderDetails;
 }

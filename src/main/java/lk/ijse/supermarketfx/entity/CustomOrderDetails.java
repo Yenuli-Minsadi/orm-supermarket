@@ -21,14 +21,10 @@ import java.math.BigDecimal;
  * --------------------------------------------
  **/
 
-@Entity
-@Table(name = "customer_orderdetails")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class CustomOrderDetails {
-    @Id
-    @GeneratedValue
     public String itemId;
     public String itemName;
     public int quantity;

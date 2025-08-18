@@ -22,14 +22,10 @@ import java.util.List;
  * --------------------------------------------
  **/
 
-@Entity
-@Table(name = "customer_order")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class CustomOrder {
-    @Id
-    @GeneratedValue
     public String orderId;
     public Date orderDate;
     public String customerId;

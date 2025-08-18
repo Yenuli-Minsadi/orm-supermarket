@@ -17,16 +17,22 @@ import java.math.BigDecimal;
  **/
 
 @Entity
-@Table(name = "item")
+@Table(name = "items")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class Item {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "item_code")
     private String id;
+
+    @Column(length = 100)//varchar(100)
     private String name;
+
     private int quantity;
 //    private double price;
+
+    //100.66
+    @Column(name = "unit_price", precision = 10, scale = 2)
     private BigDecimal price;
 }

@@ -16,16 +16,23 @@ import lombok.NoArgsConstructor;
  * --------------------------------------------
  **/
 @Entity
-@Table(name = "customer")
+@Table(name = "customers")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data // - getter, setter, to_String
 public class Customer {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(unique = true, nullable = false)
     private String nic;
+
+    @Column(unique = true)
     private String email;
+
+    @Column(length = 15)//varchar (15)
     private String phone;
 }

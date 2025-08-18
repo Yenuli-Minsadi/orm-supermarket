@@ -18,15 +18,30 @@ import java.math.BigDecimal;
  * --------------------------------------------
  **/
 @Entity
-@Table(name = "order_detail")
+@Table(name = "order_details")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class OrderDetail {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String orderId;
-    private String itemId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)//auto increment
+    private int id;
+
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
+
+//    private String orderId;
+
+    @ManyToOne
+    @JoinColumn(name = "item_code")
+    private Item item;
+//    private String itemId;
+
     private int quantity;
+
+    @Column(name = "unit_price", precision = 10, scale = 2)
     private BigDecimal price;
+
+
 }
