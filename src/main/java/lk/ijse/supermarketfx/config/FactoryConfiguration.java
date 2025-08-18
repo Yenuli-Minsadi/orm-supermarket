@@ -14,12 +14,19 @@ public class FactoryConfiguration {
     SessionFactory sessionFactory;
 
     private FactoryConfiguration() {
-        Configuration configuration = new Configuration().configure();
-        configuration.configure("hibernate.cfg.xml");//dennm oni file eka read krnna / must give the path file name ek wenas kroth
+        Configuration configuration = new Configuration();
+        //1 load (xml) load configuration
+//        configuration.configure("hibernate.cfg.xml");//dennm oni file eka read krnna / must give the path file name ek wenas kroth
+        configuration.configure();
+
+        //2 add entity classes
         configuration.addAnnotatedClass(Customer.class);
         configuration.addAnnotatedClass(Item.class);
         configuration.addAnnotatedClass(Order.class);
         configuration.addAnnotatedClass(OrderDetail.class);
+
+        //3 create session factory
+        sessionFactory = configuration.buildSessionFactory();
 
     }
 
