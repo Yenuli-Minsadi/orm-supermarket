@@ -1,0 +1,36 @@
+package lk.ijse.supermarketfx.entity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+
+/**
+ * --------------------------------------------
+ * Author: Shamodha Sahan
+ * GitHub: https://github.com/shamodhas
+ * Website: https://shamodha.com
+ * --------------------------------------------
+ * Created: 7/11/2025 9:38 AM
+ * Project: Supermarket-layered
+ * --------------------------------------------
+ **/
+
+@Entity
+@Table(name = "customer_orderdetails")
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+public class CustomOrderDetails {
+    @Id
+    @GeneratedValue
+    public String itemId;
+    public String itemName;
+    public int quantity;
+    public BigDecimal price;
+}
