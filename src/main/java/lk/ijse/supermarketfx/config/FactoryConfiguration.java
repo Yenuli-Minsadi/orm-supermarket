@@ -42,4 +42,7 @@ public class FactoryConfiguration {
         //return session;
     }
 
+    //session is not thread safe
+    //sessionFactory is thread safe and immutable(doesnt change, first time initialize krt passe aye wenas krnna ba)
+
 }
