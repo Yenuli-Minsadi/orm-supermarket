@@ -50,17 +50,29 @@ public class QueryTest {
         //Avoid writing HQL/JPQL as a string
         //use for dynamic queries
 
-//      1.  create CriteriaBuilder Object
-        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-//        2. create CriteriaQuery Object
-        CriteriaQuery<Customer> customerQuery = criteriaBuilder.createQuery(Customer.class);// query ek hdgnnw
-//        3. Set up Root entity
-        Root<Customer> root = customerQuery.from(Customer.class);
-//        4. add where condition
-        customerQuery.select(root).where(criteriaBuilder.equal(root.get("name"),"John Doe"));
-//        5. Run Query
-        Query<Customer> query = session.createQuery(customerQuery);
-        List<Customer> customerList = query.list();
+////      1.  create CriteriaBuilder Object
+//        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+////        2. create CriteriaQuery Object
+//        CriteriaQuery<Customer> customerQuery = criteriaBuilder.createQuery(Customer.class);// query ek hdgnnw
+////        3. Set up Root entity
+//        Root<Customer> root = customerQuery.from(Customer.class);
+////        4. add where condition
+//        customerQuery.select(root).where(criteriaBuilder.equal(root.get("name"),"John Doe"));
+////        5. Run Query
+//        Query<Customer> query = session.createQuery(customerQuery);
+//        List<Customer> customerList = query.list();
+
+//        Join Query
+//        select * from customers c left join orders o on c.id=o.cus_id where cid='C001';
+        Query<Object[]> query = session.createQuery("FROM Customer c left join Order o on c.id = o.customer WHERE c.id='C001'",
+                Object[].class);//return obj array since an obj is need to be returned for each column
+        //list eke tiyenne table eke data rows therefore obj array eka list ekk htiyt gnna
+
+        List<Object[]> dataList = query.list();
+        for (Object[] object: dataList) {
+            System.out.println(object[0]);//column 1
+        }
+
 
     }
 }
