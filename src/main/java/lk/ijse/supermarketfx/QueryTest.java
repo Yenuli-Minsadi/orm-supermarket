@@ -34,7 +34,7 @@ public class QueryTest {
         //HQL where case with parameter
 //        session.createQuery("",entity class) - HQL/JPQL ->query and then class name
 //        session.createNativeQuery("",entity class) - SQL
-       Query<Customer> query = session.createQuery("from Customer where name: cus_name",Customer.class);
+       Query<Customer> query = session.createQuery("from Customer cus where cus.name: cus_name",Customer.class);//using cus as a ref name for Customer entity
        query.setParameter("cus_name","John Doe");
        List<Customer>list = query.list();
 
