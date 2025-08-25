@@ -1,5 +1,8 @@
 package lk.ijse.supermarketfx;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import lk.ijse.supermarketfx.config.FactoryConfiguration;
 import lk.ijse.supermarketfx.entity.Customer;
 import org.hibernate.Session;
@@ -23,24 +26,41 @@ public class QueryTest {
 //        });
 
         //Native SQL with Where clause-tbl column name eken
-        NativeQuery<Customer> nativeQuery = session.createNativeQuery(
-                "select * from customers where customer_name:cus_name", Customer.class);
-        nativeQuery.setParameter("cus_name","John Doe");
-        List<Customer> customerList = nativeQuery.list();
-        customerList.forEach(customer->{
-            System.out.println(customer.toString());
-        });
+//        NativeQuery<Customer> nativeQuery = session.createNativeQuery(
+//                "select * from customers where customer_name:cus_name", Customer.class);
+//        nativeQuery.setParameter("cus_name","John Doe");
+//        List<Customer> customerList = nativeQuery.list();
+//        customerList.forEach(customer->{
+//            System.out.println(customer.toString());
+//        });
 
         //HQL where case with parameter
 //        session.createQuery("",entity class) - HQL/JPQL ->query and then class name
 //        session.createNativeQuery("",entity class) - SQL
-       Query<Customer> query = session.createQuery("from Customer cus where cus.name: cus_name",Customer.class);//using cus as a ref name for Customer entity
-       query.setParameter("cus_name","John Doe");
-       List<Customer>list = query.list();
+//       Query<Customer> query = session.createQuery("from Customer cus where cus.name: cus_name",Customer.class);//using cus as a ref name for Customer entity
+//       query.setParameter("cus_name","John Doe");
+//       List<Customer>list = query.list();
+//
+//       for (Customer customer : customerList) {
+//           System.out.println(customer.toString());
+//       }
 
-       for (Customer customer : customerList) {
-           System.out.println(customer.toString());
-       }
+        //Criteria API
+        //Type Safe Programmatic way build queries in HQL/JPQL
+        //Avoid writing HQL/JPQL as a string
+        //use for dynamic queries
+
+//      1.  create CriteriaBuilder Object
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+//        2. create CriteriaQuery Object
+        CriteriaQuery<Customer> customerQuery = criteriaBuilder.createQuery(Customer.class);// query ek hdgnnw
+//        3. Set up Root entity
+        Root<Customer> root = customerQuery.from(Customer.class);
+//        4. add where condition
+        customerQuery.select(root).where(criteriaBuilder.equal(root.get("name"),"John Doe"));
+//        5. Run Query
+        Query<Customer> query = session.createQuery(customerQuery);
+        List<Customer> customerList = query.list();
 
     }
 }
