@@ -62,21 +62,44 @@ public class CustomerDAOImpl implements CustomerDAO {
     @Override
     public List<Customer> getAll() throws SQLException {
         Session session = factoryConfiguration.getSession();
-        Query<Customer> query = session.createQuery("from Customer", Customer.class);
-        List<Customer> customers = query.list();
-        session.close();
-        return customers;
+        try {
+            Query<Customer> query = session.createQuery("from Customer", Customer.class);
+            List<Customer> customerList = query.list();
+            return customerList;
+        } finally {
+            session.close();
+        }
+//        Query<Customer> query = session.createQuery("from Customer", Customer.class);
+//        List<Customer> customers = query.list();
+//        session.close();
+//        return customers;
 //        List list = Customer.sess.list();
 //        ResultSet rst = Exe
     }
 
     @Override
     public String getLastId() throws SQLException {
-        ResultSet resultSet = SQLUtil.execute("SELECT customer_id FROM customer ORDER BY customer_id DESC LIMIT 1");
-        if (resultSet.next()) {
-            return resultSet.getString(1);
+//        ResultSet resultSet = SQLUtil.execute("SELECT customer_id FROM customer ORDER BY customer_id DESC LIMIT 1");
+//        if (resultSet.next()) {
+//            return resultSet.getString(1);
+//        }
+//        return null;
+        Session session = factoryConfiguration.getSession();
+        try {
+            //data eliyt gniddi select statements liynnm wenw
+//            SELECT customer_id FROM customer ORDER BY customer_id DESC
+//            Query<Customer> query = session.createQuery("SELECT c.id FROM Customer c ORDER BY c.id DESC", Customer.class).setMaxResults(1);//setmaxresult eken udata ena last id eka eliyt gnnw, 2 dunnoth anthima dekma eliyt gnnawa
+//            List<Customer> list = query.list();
+            Query<String> query = session.createQuery("SELECT c.id FROM Customer c ORDER BY c.id DESC", String.class).setMaxResults(1);//setmaxresult eken udata ena last id eka eliyt gnnw, 2 dunnoth anthima dekma eliyt gnnawa
+            List<String> list = query.list();
+            if (list.isEmpty()) {
+                return null;
+            } else {
+                return list.get(0);
+            }
+        } finally {
+            session.close();
         }
-        return null;
     }
 
     @Override
