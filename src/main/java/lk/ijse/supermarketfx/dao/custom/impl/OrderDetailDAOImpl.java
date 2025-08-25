@@ -1,8 +1,11 @@
 package lk.ijse.supermarketfx.dao.custom.impl;
 
+import lk.ijse.supermarketfx.config.FactoryConfiguration;
 import lk.ijse.supermarketfx.dao.SQLUtil;
 import lk.ijse.supermarketfx.dao.custom.OrderDetailsDAO;
 import lk.ijse.supermarketfx.entity.OrderDetail;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -20,6 +23,7 @@ import java.util.Optional;
  **/
 
 public class OrderDetailDAOImpl implements OrderDetailsDAO {
+    private final FactoryConfiguration factoryConfiguration = FactoryConfiguration.getInstance();//property injection
     @Override
     public List<OrderDetail> getAll() {
         return List.of();
@@ -32,23 +36,50 @@ public class OrderDetailDAOImpl implements OrderDetailsDAO {
 
     @Override
     public boolean save(OrderDetail orderDetail) throws SQLException {
-        return SQLUtil.execute(
-                "insert into order_details values (?,?,?,?)",
-                orderDetail.getOrderId(),
-                orderDetail.getItemId(),
-                orderDetail.getQuantity(),
-                orderDetail.getPrice()
-        );
+        Session session = factoryConfiguration.getSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            session.persist(orderDetail);
+            transaction.commit();
+            return true;
+        } catch (Exception e) {
+            transaction.rollback();
+            return false;
+        } finally {
+            session.close();
+        }
     }
 
     @Override
     public boolean update(OrderDetail orderDetail) {
-        return false;
+        Session session = factoryConfiguration.getSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            session.merge(orderDetail);
+            transaction.commit();
+            return true;
+        } catch (Exception e) {
+            transaction.rollback();
+            return false;
+        } finally {
+            session.close();
+        }
     }
 
     @Override
     public boolean delete(String id) {
-        return false;
+        Session session = factoryConfiguration.getSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            session.remove(id);
+            transaction.commit();
+            return true;
+        } catch (Exception e) {
+            transaction.rollback();
+            return false;
+        } finally {
+            session.close();
+        }
     }
 
     @Override

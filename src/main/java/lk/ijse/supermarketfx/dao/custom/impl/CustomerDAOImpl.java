@@ -1,5 +1,7 @@
 package lk.ijse.supermarketfx.dao.custom.impl;
 
+import com.mysql.cj.protocol.x.Notice;
+import lk.ijse.supermarketfx.bo.exception.DuplicateException;
 import lk.ijse.supermarketfx.config.FactoryConfiguration;
 import lk.ijse.supermarketfx.dao.SQLUtil;
 import lk.ijse.supermarketfx.dao.custom.CustomerDAO;
@@ -8,6 +10,7 @@ import lk.ijse.supermarketfx.entity.Customer;
 import lk.ijse.supermarketfx.util.CrudUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -34,33 +37,37 @@ public class CustomerDAOImpl implements CustomerDAO {
         Session session = factoryConfiguration.getSession();
         Transaction transaction = session.beginTransaction();
         try {
+            if (customer == null || customer.getId() == null) {
+                throw new IllegalArgumentException("Invalid customer entity or ID is null");
+            }
+
+            Customer existCustomer = session.get(Customer.class,customer.getId());
+            if (existCustomer != null) {
+                throw new DuplicateException("Customer ID is duplicated");
+            }
             session.persist(customer);
             transaction.commit();
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
             transaction.rollback();
             return false;
         } finally {
-            session.close();
+            if (session != null) {
+                session.close();
+            }
         }
     }
 
     @Override
     public List<Customer> getAll() throws SQLException {
-        ResultSet resultSet = SQLUtil.execute("SELECT * FROM customer");
-
-        List<Customer> list = new ArrayList<>();
-        while (resultSet.next()) {
-            Customer customer = new Customer(
-                    resultSet.getString(1),
-                    resultSet.getString(2),
-                    resultSet.getString(3),
-                    resultSet.getString(4),
-                    resultSet.getString(5)
-            );
-            list.add(customer);
-        }
-        return list;
+        Session session = factoryConfiguration.getSession();
+        Query<Customer> query = session.createQuery("from Customer", Customer.class);
+        List<Customer> customers = query.list();
+        session.close();
+        return customers;
+//        List list = Customer.sess.list();
+//        ResultSet rst = Exe
     }
 
     @Override
@@ -74,19 +81,46 @@ public class CustomerDAOImpl implements CustomerDAO {
 
     @Override
     public boolean update(Customer customer) throws SQLException {
-        return SQLUtil.execute(
-                "UPDATE customer SET name = ?, nic = ?, email = ?, phone = ? WHERE customer_id = ?",
-                customer.getName(),
-                customer.getNic(),
-                customer.getEmail(),
-                customer.getPhone(),
-                customer.getId()
-        );
+        Session session = factoryConfiguration.getSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            if (customer == null || customer.getId() == null) {
+                throw new IllegalArgumentException("Invalid customer entity or customer ID is null");
+            }
+
+            Customer existCustomer = session.get(Customer.class, customer.getId());
+            if (existCustomer == null) {
+                throw new IllegalArgumentException("Customer with ID " + customer.getId() + " does not exist");
+            }
+            session.merge(customer);
+            transaction.commit();
+            return true;
+        } catch (Exception e) {
+            transaction.rollback();
+            return false;
+        } finally {
+            session.close();
+        }
     }
 
     @Override
     public boolean delete(String id) throws SQLException {
-        return SQLUtil.execute("DELETE FROM customer WHERE customer_id = ?", id);
+        Session session = factoryConfiguration.getSession();
+        Transaction transaction = session.beginTransaction();
+        try {
+            Customer customer = session.get(Customer.class, id);
+            if (customer != null) {
+                session.remove(id);
+                transaction.commit();
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            transaction.rollback();
+            return false;
+        } finally {
+            session.close();
+        }
     }
 
     @Override

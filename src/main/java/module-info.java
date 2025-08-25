@@ -7,6 +7,7 @@ module lk.ijse.supermarketfx {
     requires java.mail;
     requires jakarta.persistence;
     requires org.hibernate.orm.core;
+    requires mysql.connector.j;
 
     opens lk.ijse.supermarketfx.controller to javafx.fxml;
     opens lk.ijse.supermarketfx.dto.tm to javafx.base;

@@ -22,9 +22,10 @@ import lombok.NoArgsConstructor;
 @Data // - getter, setter, to_String
 public class Customer {
     @Id
+    @Column(name = "customer_id")
     private String id;
 
-    @Column(nullable = false)
+    @Column(name = "customer_name", nullable = false)
     private String name;
 
     @Column(unique = true, nullable = false)
