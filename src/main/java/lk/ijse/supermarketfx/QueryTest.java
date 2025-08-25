@@ -64,7 +64,7 @@ public class QueryTest {
 
 //        Join Query
 //        select * from customers c left join orders o on c.id=o.cus_id where cid='C001';
-        Query<Object[]> query = session.createQuery("FROM Customer c left join Order o on c.id = o.customer WHERE c.id='C001'",
+        Query<Object[]> query = session.createQuery("FROM Customer c left join Order o on c.id = o.customer",
                 Object[].class);//return obj array since an obj is need to be returned for each column
         //list eke tiyenne table eke data rows therefore obj array eka list ekk htiyt gnna
 
